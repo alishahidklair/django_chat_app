@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import os
 
 from pathlib import Path
 
@@ -79,14 +80,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "django_chat_app_clone.wsgi.application"
 ASGI_APPLICATION = "django_chat_app_clone.asgi.application"
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+if DEBUG:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": { 
+                "hosts": [("localhost", 6379)],
+            },
         },
-    },
-}
+    }
+else:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": { 
+                "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+            },
+        },
+    }
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
