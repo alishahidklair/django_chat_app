@@ -1,0 +1,170 @@
+<!-- chat/templates/chat/room.html -->
+{% extends "chat/layout.html" %}
+
+{% block title %}Index{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="container-header">
+      <h3 id="user-name" class=" text-left"> {{ user }}</h3>
+      <a href="{% url 'chat' %}"><h3 class=" text-center">Inbox</h3></a>
+      <a href="{% url 'logout' %}"><h3>Logout</h3></a>
+    </div>
+</div>
+    <div class="mesgs">
+        <div class="msg_history"> 
+          {% for j in messages %}
+          {% if j.sender_username|cut:" " == user_name %}
+          <div class="outgoing_msg" id="{{ j.timestamp }}">
+            <div class="sent_msg">
+              <p>{{ j.message }}</p>
+              <span class="time_date">{{ j.timestamp }}</span>
+            </div>
+          </div>
+          {% else %}
+          <div class="incoming_msg" id="{{ j.timestamp }}">
+            <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">
+            </div>
+            <div class="received_msg">
+              <div class="received_withd_msg">
+                <p>{{ j.message }}</p>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+        <div class="type_msg">
+          <div class="input_msg_write">
+            <form id="chat_form">
+              <input autofocus id="chat-message-input" type="text" class="message" placeholder="Type a message" />
+              <button id="chat-message-submit" class="msg_send_btn" type="submit">
+                <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+              </button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+
+    {{ room_name|json_script:"room-name" }}
+
+    
+    <script>
+        const roomName = JSON.parse(document.getElementById('room-name').textContent);
+        const userName = document.getElementById('user-name').textContent;
+
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/chat/'
+            + roomName
+            + '/'
+        );
+        
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            $('div.msg_history').append(`<div class="outgoing_msg">
+              <div class="sent_msg">
+                  <p>${data.message}</p>
+                  <span class="time_date"> 11:01 AM    |    June 9</span></div>
+            </div>`)
+          scrollDown()
+          showNotification(data.message)
+          
+        };
+
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+        document.querySelector('#chat-message-input').focus();
+        document.querySelector('#chat-message-input').onkeyup = function(e) {
+            if (e.keyCode === 13) {  // enter, return
+                document.querySelector('#chat-message-submit').click();
+            }
+        };
+
+        document.querySelector('#chat-message-submit').onclick = function(e) {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'roomName': roomName,
+                'userName': userName
+            }));
+            
+
+            messageInputDom.value = '';
+        };
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function scroll() {})
+        
+      
+        // THIS FUNCTION SHOULD SCROLL DOWN AUTOMATICALLY
+        let scrollingElement = (document.scrollingElement || document.body)
+        let msgH = document.querySelectorAll(".msg_history > div"), CurrentLen;
+        let init = () => {
+          CurrentLen = msgH.length;
+          
+        }
+        init();
+        let validatePosition = () => {
+          if (msgH.length === CurrentLen) {
+            msgH[msgH.length - 1].setAttribute("id", "last_message");
+            for (var i; i < msgH.length; i++) {
+              if (msgH[i].id === "last_message" && msgH[i] !== msgH.length - 1) {
+                msgH[i].removeAttribute("id");
+                msgH[msgH.length - 1].setAttribute("id", "last_message");
+                console.log(msgH[msgH.length - 1].setAttribute("id", "last_message"));
+              }
+            }
+          }
+        }
+        let scrollDown = () => {
+          // scrollingElement.scrollTop = scrollingElement.scrollHeight;
+          // $container.animate({ scrollTop: $container[0].scrollHeight }, "slow");
+          validatePosition();
+          location.href = "#last_message";
+          init();
+        }
+        scrollDown()
+
+
+
+    </script>
+    <script>
+      let permission = Notification.permission;
+      if(permission === "granted") {
+        let perm = true;
+      } else if(permission === "default"){
+        requestAndShowPermission();
+      } else {
+        alert("Allow Notification");
+      }
+
+      function showNotification(message) {
+        if(document.visibilityState === "visible") {
+          return;
+        }
+        var title = "Chat";
+        // icon = "image-url"
+        var body = message;
+        var notification = new Notification('Title', { body});
+        notification.onclick = () => {
+          notification.close();
+          window.parent.focus();
+        }
+      }
+
+      function requestAndShowPermission() {
+        Notification.requestPermission(function (permission) {
+          if (permission === "granted") {
+            showNotification();
+          }
+        });
+      }
+    </script>
+
+{% endblock %}

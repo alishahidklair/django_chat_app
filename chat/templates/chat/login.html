@@ -1,0 +1,24 @@
+{% extends "chat/layout.html" %}
+
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+    <h1>Login In</hx1>
+
+
+
+    <form action="{% url 'login' %}" method="post" >
+        {% csrf_token %}
+        <input autofocus name="username" placeholder="Username" type="text">
+        <input name="password" placeholder="Password" type="password">
+        <input type="submit">
+    </form>
+
+
+    {% if message %}
+    <div>{{ message }}</div>
+    {% endif %}
+
+    
+{% endblock %}

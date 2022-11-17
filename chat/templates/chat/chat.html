@@ -1,0 +1,91 @@
+{% extends "chat/layout.html" %}
+
+{% block title %}Chat{% endblock %}
+
+
+{% block body %}
+  <div class="container">
+    <div class="container-header">
+      <h3 class=" text-left"> {{ user }}</h3>
+      <h3 class=" text-center">Chat</h3>
+
+      <a href="{% url 'logout' %}"><h3>Logout</h3></a>
+    </div>
+    <div class="messaging">
+      <div class="inbox_msg">
+        <div class="inbox_people">
+          <div class="headind_srch">
+            <div class="recent_heading">
+              <h4>Recent</h4>
+            </div>
+            <div class="srch_bar">
+              <div class="stylish-input-group">
+                <input type="text" class="search-bar" placeholder="Search">
+                <span class="input-group-addon">
+                  <button type="button"> <i class="fa fa-search" aria-hidden="true"></i> </button>
+                </span>
+              </div>
+            </div>
+            <div class="new_chat">
+              <div id="new_chat_overlay"></div>
+              <button id="new_chat_btn"><i class="fa fa-plus"></i> New Chat</button>
+              <form method="POST" action="{% url 'chat' %}" id="new_chat_form">
+                {% csrf_token %}
+                <label for="username"><strong>Username: </strong></label>
+                <input type="text" name="username" placeholder="type username here">
+                <input type="submit" value="Submit">
+              </form>
+            </div>
+          </div>
+          <div class="inbox_chat">
+            {% for i in data %}
+            <!-- need to add room id based on how chanels work -->
+            <a href="{% url 'room' i.room_id %}">
+              <div class="chat_list" id="{{ i.room_id }}">
+                <div class="chat_people">
+                  <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                  <div class="chat_ib">
+                    <h5>{{ i.username }}</h5>
+                    <p id="last-message">{{ i.last_message }}</p>
+                  </div>
+                </div>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% if user_message %}
+        <h3>{{ user_message }}</h3>
+      {% endif %}
+      </div>
+
+      <p class="text-center top_spac"> Design by
+        <a target="_blank" href="https://www.linkedin.com/in/sunil-rajput-nattho-singh/">Sunil Rajput</a>
+      </p>
+    </div>
+  </div>
+
+
+
+  <script>
+    window.onload = function () {
+      let newChatBtn = document.querySelector('#new_chat_btn');
+      let newChatForm = document.querySelector('#new_chat_form');
+      let newChatoverlay = document.querySelector('#new_chat_overlay');
+      newChatBtn.onclick = (e) => {
+        if (e.target === newChatBtn) {
+          newChatForm.style.display = "block";
+          newChatoverlay.style.display = 'block';
+
+        }
+      }
+      newChatoverlay.onclick = (e) => {
+        if (e.target === newChatoverlay) {
+          newChatForm.style.display = "none";
+          newChatoverlay.style.display = 'none';
+        }
+      }
+    }
+  </script>
+{% endblock %}
+
