@@ -26,6 +26,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = True
 
 ALLOWED_HOSTS = []
+CSRF_TRUSTED_ORIGINS = [
+'http://0.0.0.0:5000',
+'http://localhost:8000'
+]
+
+CORS_ORIGIN_WHITELIST = [
+'http://0.0.0.0:5000',
+'http://localhost:8000',
+]
+CORS_ORIGIN_ALLOW_ALL = True
 
 
 # Application definition
@@ -53,16 +63,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "django_chat_app_clone.urls"
 
-CSRF_TRUSTED_ORIGINS = [
-'http://0.0.0.0:5000'
-]
-ALLOWED_HOSTS = [
-'0.0.0.0',
-]
-CORS_ORIGIN_WHITELIST = [
-'http://0.0.0.0:8000',
-]
-CORS_ORIGIN_ALLOW_ALL = True
 
 
 
