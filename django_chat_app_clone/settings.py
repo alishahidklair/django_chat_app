@@ -51,6 +51,11 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://hemant-to-do.herokuapp.com'
+]
+
+
 ROOT_URLCONF = "django_chat_app_clone.urls"
 
 TEMPLATES = [
@@ -127,6 +132,3 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 import django_heroku
 django_heroku.settings(locals())
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://hemant-to-do.herokuapp.com'
-]
