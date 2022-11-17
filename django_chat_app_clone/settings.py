@@ -80,24 +80,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "django_chat_app_clone.wsgi.application"
 ASGI_APPLICATION = "django_chat_app_clone.asgi.application"
-if DEBUG:
-    CHANNEL_LAYERS = {
-        "default": {
-            "BACKEND": "channels_redis.core.RedisChannelLayer",
-            "CONFIG": { 
-                "hosts": [("localhost", 6379)],
-            },
+# if DEBUG:
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": { 
+            "hosts": [("https://django-chat-app-clone.herokuapp.com", 6379)],
         },
-    }
-else:
-    CHANNEL_LAYERS = {
-        "default": {
-            "BACKEND": "channels_redis.core.RedisChannelLayer",
-            "CONFIG": { 
-                "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-            },
-        },
-    }
+    },
+}
+# else:
+#     CHANNEL_LAYERS = {
+#         "default": {
+#             "BACKEND": "channels_redis.core.RedisChannelLayer",
+#             "CONFIG": { 
+#                 "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+#             },
+#         },
+#     }
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
