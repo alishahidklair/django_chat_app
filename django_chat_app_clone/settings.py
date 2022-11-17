@@ -28,14 +28,10 @@ DEBUG = True
 ALLOWED_HOSTS = []
 CSRF_TRUSTED_ORIGINS = [
 'http://0.0.0.0:5000',
-'http://localhost:8000'
+'http://localhost:8000',
+'https://django-chat-app-clone.herokuapp.com'
 ]
 
-CORS_ORIGIN_WHITELIST = [
-'http://0.0.0.0:5000',
-'http://localhost:8000',
-]
-CORS_ORIGIN_ALLOW_ALL = True
 
 
 # Application definition
